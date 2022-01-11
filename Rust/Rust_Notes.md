@@ -31,33 +31,6 @@
 - `sudo apt-get install libudev-dev`
 - `sudo apt install pkg-config`
 
-## Project and Library Crates
-
-- To Create Project
-  - `cargo new --bin projectname`
-    - This creates a new binary crate called projectname that will produce an ***executable***
-- To Crerate Library
-  - `cargo new --lib mylib`
-    - This create a new library crate called mylib
-    - Library are meant to be used for current and other projects
-- To build
-  - `cargo build`
-    - By default cargo builds with very few optimizations turned on
-      - This makes compiling does not take very long and produces build with debugging information in them
-    - `targer/debug/project exe`
-  - `cargo build --release`
-    - It builds without debugging information
-      - best for performance analysis
-    - `target/release/project exe`
-- To build and run (most common)
-  - `cargo run`
-    - This will do both *build* and run the executable
-
-## Peformance analysis
-
-- If you planning to do any performance analysis, make sure to build in *`release`* mode by
-  - `cargo build --release`
-
 ### Rust in WSL (Windows)
 
   ```text
@@ -84,6 +57,33 @@
 ### Rust Uninstall in WSL
 
 - `rustup self uninstall`
+
+## Project and Library Crates
+
+- To Create Project
+  - `cargo new --bin projectname`
+    - This creates a new binary crate called projectname that will produce an ***executable***
+- To Crerate Library
+  - `cargo new --lib mylib`
+    - This create a new library crate called mylib
+    - Library are meant to be used for current and other projects
+- To build
+  - `cargo build`
+    - By default cargo builds with very few optimizations turned on
+      - This makes compiling does not take very long and produces build with debugging information in them
+    - `targer/debug/project exe`
+  - `cargo build --release`
+    - It builds without debugging information
+      - best for performance analysis
+    - `target/release/project exe`
+- To build and run (most common)
+  - `cargo run`
+    - This will do both *build* and run the executable
+
+## Peformance analysis
+
+- If you planning to do any performance analysis, make sure to build in *`release`* mode by
+  - `cargo build --release`
 
 ## serial_test
 
