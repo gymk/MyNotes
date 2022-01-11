@@ -1,5 +1,5 @@
 # MyNotes
-My study nodes
+My study notes
 
 
 Basically I make notes in whatever I study for my quick reference.
