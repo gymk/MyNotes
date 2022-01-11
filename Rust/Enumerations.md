@@ -1,7 +1,7 @@
 # `enum` Enumerations
 
 - What is enum in Rust
-  - A way to express that a value can be one out of a finite set of possible values
+  - A way to express that a value ***can be one out of a finite set of possible values***
   - `enum` is one of the way to define custom types in Rust (`struct` are the other)
 
 - When enums are useful

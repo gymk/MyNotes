@@ -48,7 +48,7 @@
 - Other forms of structs
   - Tuple structs and unit structs
     - Tuple structs
-      - These are strucuts that a name for the whole type but don't have name for their fields
+      - These are strucuts that have '*a name for the whole type*' but don't have name for their fields
         - `struct Triangle(u32, u32, u32);`
         - `let triangle1 = Triangle(3, 4, 5);`
       - These behave similarly to tuples
@@ -80,7 +80,7 @@
           - That is we are giving the tuple a name that makes this new type incompatible with other tuples
         - Used for **newtype pattern**
           - An existing type is wrapped in a tuple struct with one element to add meaning
-            - Example:
+            - Example: THIS WON'T COMPILE
 
               ```rust
               struct Meters(u8);
@@ -99,7 +99,7 @@
               - Above code won't compile, we are passing `u8` against `Meters` which are incompatible tupes
               - This newtype pattern prevents bugs caused by accidently using values that are in the wrong units
     - Unit structs
-      - Structs actually don't need to have any fileds
+      - Structs actually don't need to have any fields
       - Structs without fields are called **Unit Structs**
       - Use
         - Eventhough these is no fields, **we can define methods on them**
@@ -113,8 +113,9 @@
       ```
 
 - Enum variants that look like structs
-  - Instead of paranthese we use flower brackets `{}`
-  - While create the variable also, we use flower brackets
+  - Since rust suppoprts `enum variants`, we can have field names assigned to it
+    - Unlike `struct` (e.g., tuple struct) which uses paranthesis `()`; Instead of paranthese we use flower brackets `{}`
+      - That is, While creating the `enum` variable, we use flower brackets
 
   ```rust
   enum Clock {
@@ -131,6 +132,10 @@
     };
   }
   ```
+
+  - In this example, `Sundial`, `Digital` and `Analog` are enum variants
+    - Its equivalent types are defined inside flower brackets `{}` which has its own *field names*
+  - In `struct` we will just have "field_name : data_type", and neither paranthesis nor flower brackets we use while defining the fields
 
 ## Defining struct
 
@@ -178,8 +183,8 @@
 
 Many ways
 
-- Using `new()` construct if this construct is defined for that struct
-- If *`new`* not available, then use the below method:
+- Using `new()` method ***if this associated method is defined for that struct***
+- If *`new`* not associated method is not available, then use the following way for instantiation:
 
     ```rust
     let example = foo {
@@ -194,12 +199,13 @@ Many ways
 - methods are similar to functions
 - methods are defined for `enum` and `struct` that define the behavior
 
-- When methods are useful
+- When the methods are useful?
   - When you want to add a behaviour to the custom data type that you defined (and that behavior ONLY applicable to that data type)\
     - E.g., a coach won't had a position in the game
 - Syntax for defining a method
-  - Define your function with `impl` `struct_name` `{}`
-    - First parameter of method is always `self`
+  - Defined within an `impl` block
+    - Define your function within `impl struct_name` `{}` block
+      - First parameter of the function is always `self`
 - Syntax for calling a method
   - Call variable instance with `.` and the name of the methods, with required arguments
 

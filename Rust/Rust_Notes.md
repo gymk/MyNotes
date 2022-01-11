@@ -247,7 +247,7 @@
 
 ## struct
 
-[`struct` notes](structs.md)
+[`struct` notes](Structs.md)
 
 ## Traits
 
