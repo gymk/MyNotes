@@ -5,6 +5,7 @@
 ## Ownership
 
 - Definition of ownership
+  - Rust's strategy of managing memory
 - How ownership differs from:
   - Manual memory management in C
   - Garbage collection in Ruby
@@ -21,7 +22,7 @@
 - Each piece of data has one owning variable, the memory owner
 - Owner is responsible for cleaning up that data and no one else
   - Cleanup happens when the owner goes out of scope
-- The owner decies on mutability
+- The owner decides on mutability
 
 ### How ownership differs `C` / `Ruby` / `Rust`
 
@@ -103,7 +104,7 @@
     ```rust
     fn main() {
         let a = String::from("Hi");
-        println!("Salution string {}", a);
+        println!("Salutation string {}", a);
     }
     ```
 
@@ -119,7 +120,7 @@
   fn main() {
       let mut a = String::from("Hi");
       a.push_str(", Good Morning!!!");
-      println!("Salution string {}", a);
+      println!("Salutation string {}", a);
   }
 
   // Salution string Hi, Good Morning!!!
