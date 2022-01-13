@@ -1,0 +1,44 @@
+# Art of Concurrency in Go
+
+- 3 Objectives
+  - Get you try Go
+  - Feel on working with language
+    - Syntax and Idioms
+    - How to change my thinking
+    - How to solve problem using this language
+  - Give starting point
+    - Materials/..
+- Popular editors
+  - VS Code
+  - Goland
+
+- Go good at Network Programming
+  - STD library provides tooling/abstraction on that
+    - `net` package in Go standard library
+- Sample code available in
+  - <https://github.com/jboursiquot/portscan>
+- Go Source
+  - <github.com/go>
+    - Can see Go’s full source
+- To know about a package
+  - “pkg.go.dev”
+    - You can search the package
+- No Public/Private
+  - Instead exported/non-exported
+- Only ‘for’ loop
+  - No `while`, `do … while`
+- Go scheduler
+  - Normally it will have multiple OS threads
+  - Multiplexes the Go routines on one OS thread
+  - This determines when a thread runs/ gets paused/ …
+  - It is efficient, doesn’t impact OS threads
+- `init` functions
+  - Init functions of all the imported packages will get executed before `main` function
+- No exception handling in Go
+  - No Try/Catch
+  - You handle error just like any other value
+  - This enables logging/sending the errors to other outside world
+- `maps` in Go is not concurrent
+  - Package will tell whether it is concurrent support or not
+- Communication between `Go` routines is using ‘chan’
+  - Pipe/Buffered channel
