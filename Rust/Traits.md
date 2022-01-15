@@ -1,5 +1,9 @@
 # Traits
 
+- `Deref`
+  - `Deref Coercion`
+- `DerefMut`
+
 ## Derivable Traits
 
 - `Debug` trait
@@ -41,3 +45,23 @@
     - For primitive signed integers (`i8` to `i128` and `isize`), negative values are formatted as the two's complement representation
     - Alternate flag `#`, adds a `0x` in front of the output
       - `{:#X} // 0x2A`
+
+## `Deref`
+
+- *Specifically designed for smart pointers*
+- *`Deref` should be implemented only for smart pointers*
+
+- <https://doc.rust-lang.org/std/ops/trait.Deref.html#>
+  - Used for immutable dereferencing operations like `*v`
+  - **Explicit deferencing**
+    - `*v`
+  - **Implicit deferencing** (`Deref coerciion`)
+    - Used by the compiler in many circumstances
+
+## `DerefMut`
+
+- *Specifically designed for smart pointers*
+- *`DerefMut` should be implemented only for smart pointers*
+
+- <https://doc.rust-lang.org/std/ops/trait.DerefMut.html>
+  - Used for mutable deferencing operations like `*v = l;`
