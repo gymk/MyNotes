@@ -366,12 +366,14 @@ fn pluralize(singular: String) -> String {
 - Slice is a borrowed data
 
 - What is a slice?
+  - *Borrow a slice of data*
   - It is a data type that always borrow data owned by some other data structure
   - In below picture,
     - How a slice is stored -> A pointer and length
     - The reference that slice referencess -> a reference to `ll` in the `hello` string
       - ![String Slice](images/String_Slice.png)
 - How to create a slice from Strings, Vecs, or arrays?
+  - `&var[start..end]`
   - `String`
     - `&` and a range `[start_index..end_index]`
     - ![Creating a slice](images/Creating_a_slice.png)  
@@ -440,6 +442,7 @@ fn pluralize(singular: String) -> String {
     ```
 
 - Why use slices as paramters?
+  - *Flexibility*
   - it is better to use a slice or a string slice as parameters to functions or methods, rathen than borrowing a `Vec` , array, or `String`
     - Example - 1: Using array and `Vec`
 
@@ -499,9 +502,10 @@ fn pluralize(singular: String) -> String {
 
       - By specifying a string slice as parameer (rather than borrowing an owned `String`), functions can accept either borrowed strings or string literals
 - How does `&String` become `&str`?
+  - *`Deref` trait and `Deref coercion` trait*
   - *It is the Rust feature that turn `&String` into `&str`*
     - [`Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html) trait implemented to convert `&String` to `&str`
-      - The Rust standard library includes the implementation of a **trait** called **`Deref`** on `String`, which enables Rust to convert `&String`(a reference to a String) into a `&str`(a string slice) containing the whole `String`
+      - The Rust standard library includes the implementation of a [**trait**](Traits.md) called **`Deref`** on `String`, which enables Rust to convert `&String`(a reference to a String) into a `&str`(a string slice) containing the whole `String`
     - [`Deref coercion`](https://doc.rust-lang.org/std/ops/trait.Deref.html#more-on-deref-coercion) when calling functions are methods
       - *`Deref coercion` is a Rust future*
         - When you call a function or method, the compiler will automatically dereference the arguments (if need be), to convert them to match the function parameter type
