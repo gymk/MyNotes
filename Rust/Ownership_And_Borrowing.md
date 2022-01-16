@@ -510,3 +510,618 @@ fn pluralize(singular: String) -> String {
       - *`Deref coercion` is a Rust future*
         - When you call a function or method, the compiler will automatically dereference the arguments (if need be), to convert them to match the function parameter type
       - This works for arrays and vectors too
+
+## Borrowing and Mutability
+
+- It is possible to mutably borrow a value in order to change it without taking ownership - 'mutable reference'
+
+- How to create and use a mutable reference?
+  - In functions
+  - In first parameter of methods
+- Borrowing rules involving mutability
+  - These rules are enforced by the compiler for the memory safety
+  - Example of a problem prevented by the borrowing rules
+
+### How to create and use a mutable reference
+
+By *&mut*
+
+- We use `mut` keyword to make a variable mutable
+  - `let mut x = 5;`
+- To create a mutable reference, we add `mut` after `&`
+  - `&mut x`
+
+- In Functions
+  - Example
+    - **Not Working Example**
+
+      ```rust
+      #[derive(Debug)]
+      struct Bucket {
+          liters: u32,
+      }
+
+      fn pour(source: &Bucket, target: &Bucket, amount: u32) {
+          source.liters -= amount;
+          target.liters += amount;
+      }
+
+      fn main() {
+          let bucket1 = Bucket{ liters: 20 };
+          let bucket2 = Bucket{ liters: 10 };
+
+          pour(&bucket1, &bucket2, 3);
+
+          println!("Bucket 1: {:?}", bucket1);
+          println!("Bucket 2: {:?}", bucket2);
+      }
+
+      // error[E0594]: cannot assign to `source.liters`, which is behind a `&` reference
+      //  --> src/main.rs:7:5
+      //   |
+      // 6 | fn pour(source: &Bucket, target: &Bucket, amount: u32) {
+      //   |                 ------- help: consider changing this to be a mutable reference: `&mut Bucket`
+      // 7 |     source.liters -= amount;
+      //   |     ^^^^^^^^^^^^^^^^^^^^^^^ `source` is a `&` reference, so the data it refers to cannot be written
+
+      // error[E0594]: cannot assign to `target.liters`, which is behind a `&` reference
+      //  --> src/main.rs:8:5
+      //   |
+      // 6 | fn pour(source: &Bucket, target: &Bucket, amount: u32) {
+      //   |                                  ------- help: consider changing this to be a mutable reference: `&mut Bucket`
+      // 7 |     source.liters -= amount;
+      // 8 |     target.liters += amount;
+      //   |     ^^^^^^^^^^^^^^^^^^^^^^^ `target` is a `&` reference, so the data it refers to cannot be written
+
+      // For more information about this error, try `rustc --explain E0594`.
+      // error: could not compile `var_test` due to 2 previous errors
+      ```
+
+    - **Working Example**
+
+      ```rust
+      #[derive(Debug)]
+      struct Bucket {
+          liters: u32,
+      }
+
+      fn pour(source: &mut Bucket, target: &mut Bucket, amount: u32) {
+          source.liters -= amount;
+          target.liters += amount;
+      }
+
+      fn main() {
+          let mut bucket1 = Bucket{ liters: 20 };
+          let mut bucket2 = Bucket{ liters: 10 };
+
+          pour(&mut bucket1, &mut bucket2, 3);
+
+          println!("Bucket 1: {:?}", bucket1);
+          println!("Bucket 2: {:?}", bucket2);
+      }
+
+      // Bucket 1: Bucket { liters: 17 }
+      // Bucket 2: Bucket { liters: 13 }
+      ```
+
+      - Not the places where `mut` keyword has been added to indicate the mutable reference
+
+- In first parameter of methods
+  - Example:
+
+    ```rust
+    #[derive(Debug)]
+    struct CarPool {
+        passengers: Vec<String>,
+    }
+
+    impl CarPool {
+        // Add the names passengers to the CarPool
+        fn pick_up(&mut self, name: String) {
+            self.passengers.push(name)
+        }
+    }
+
+    fn main() {
+        let mut monday_car_pool = CarPool {
+            passengers: vec![]
+        };
+
+        monday_car_pool.pick_up(String::from("Jake"));
+        println!("CarPool State: {:?}", monday_car_pool);
+
+        monday_car_pool.pick_up(String::from("Carol"));
+        println!("CarPool State: {:?}", monday_car_pool);
+    }
+
+    // CarPool State: CarPool { passengers: ["Jake"] }
+    // CarPool State: CarPool { passengers: ["Jake", "Carol"] }
+      ```
+
+    - In this,s the method `pick_up` takes mutable reference to `self` to update the passengers who are picked up
+      - Since `pick_up` is a method on `CarPool`, rust automatically passes the `monday_car_pool` as `self` mutable reference
+        - No need to call `monday_car_pool`  explicitly as mutable reference - rust compiler performs that
+    - **Differentiation of mutable vs non-mutable `self` methods**
+      - Can be found from method signature
+        - mutable reference - `method(&mut self, ...)`
+        - non-mutable reference - `method(&self, ...)`
+
+### Borrowing rules involving mutability
+
+*Many immutable or 1 mutable*
+
+- Rules (when you have  reference)
+  - You may have EITHER:
+    - Many immutable references (to a value) or
+    - One mutable reference (to that value)
+
+### Preventing Iterator Invalidation
+
+- Example of a problem prevented by the borrowing rules
+  - Non-compiling code (assume it compiles and works)
+    - <img src="images/Borrow_Rules_Demo_1.png"  width="521" height="262">
+
+      ```rust
+      fn main() {
+          let mut list = vec![1, 2, 3];
+          for i in &list {
+              println!("i is {}", i);
+              list.push(i + 1);
+          }
+      }
+
+      // error[E0499]: cannot borrow `list` as mutable more than once at a time
+      ```
+
+      - In above code we are trying to take a immutable as mutable
+        - Borrows `&list` as immutable in `for i in &list {`
+        - Then we are trying to borrow the same list as mutabled in `list.push(i + 1);`
+          - [`push`](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.push) method takes a mutable reference of the `self`
+      - Real problem with this code is with respect to management of the memory backing the vector
+        - After push the `data` might change to new as result of the push
+          - <img src="images/Borrow_Rules_Demo_2.png"  width="521" height="262">
+        - The memory get changed after push
+          - <img src="images/Borrow_Rules_Demo_3.png"  width="521" height="262">
+      - **Iteration Invalidation** - Above issue is called as iterator invalidation
+
+## Borrowing Code Patterns
+
+In Rust, there number of useful code patterns exists because of this borrowing rules
+
+- What does "at the same time" mean?
+  - That is "borrows happening at the same time"
+- Common code patterns in Rust because of the borrowing rules
+  - (introducing) New Scopes
+  - (using) Temporary variables
+  - (using) Entry API
+  - Splitting up structs (into multiple smaller structs)
+- Improvements coming to the borrow checker
+
+### "at the same time" pattern
+
+- *In the same scope*
+
+- <img src="images/Borrow_Code_Patterns_1.png"  width="549" height="105">
+
+  - It means they are in the same lexical scope created by curly brackets
+
+- Example 1: immutable borrow (working)
+
+    ```rust
+    fn main() {
+        let list = vec![1, 2, 3];
+
+        let list_first = list.first();
+        let list_last = list.last();
+
+        println!(
+            "The first element is {:?} and the last is {:?}",
+            list_first,
+            list_last
+        );
+    }
+
+    // The first element is Some(1) and the last is Some(3)
+    ```
+
+  - In above example, we have two 'immutable borrows' ***at the same time***.
+    - <img src="images/Borrow_Code_Patterns_2.png"  width="366" height="212">
+
+      - `list_first` and `list_last` are valid until the end of main
+
+- Example 2: both immutable and mutable borrow in same scope (non working)
+
+  ```rust
+  fn main() {
+      let mut list = vec![1, 2, 3];
+
+      let list_first = list.first();
+      let list_last = list.last();
+
+      let list_first_mut = list.first_mut().expect("list wasy empty");
+      *list_first_mut += 1;
+
+      println!(
+          "The first element is {:?} and the last is {:?}",
+          list_first,
+          list_last
+      );
+  }
+
+  // error[E0502]: cannot borrow `list` as mutable because it is also borrowed as immutable
+  //   --> src/main.rs:7:26
+  //    |
+  // 4  |     let list_first = list.first();
+  //    |                      ------------ immutable borrow occurs here
+  // ...
+  // 7  |     let list_first_mut = list.first_mut().expect("list wasy empty");
+  //    |                          ^^^^^^^^^^^^^^^^ mutable borrow occurs here
+  // ...
+  // 12 |         list_first,
+  //    |         ---------- immutable borrow later used here
+
+  // For more information about this error, try `rustc --explain E0502`.
+  ```
+
+  - Since *immutable borrow* lasts until the end of main, we can't borrow as mutable within the same scope
+    - Both *immutable borrow* and *mutable borrow* happening ***at the same time***
+      - That is, ***at the same time***  you can't borrow as immutable and mutable within the same scope
+
+- Example 3: mutable borrow without variable and immutable borrow in same scope (working)
+
+    ```rust
+    fn main() {
+        let mut list = vec![1, 2, 3];
+
+        *list.first_mut().expect("list wasy empty") += 1;
+
+        let list_first = list.first();
+        let list_last = list.last();
+
+        println!(
+            "The first element is {:?} and the last is {:?}",
+            list_first,
+            list_last
+        );
+    }
+
+    // The first element is Some(2) and the last is Some(3)
+    ```
+
+- Here we table immutable reference after we have mutated the `list`
+  - This example still has a mutable and immutable reference in the same scope
+    - Because
+      - The *mutable borrow* only lasts for the single expression `list.first_mut()` because there is no vairable holding on to the reference until the end of the main function
+        - <img src="images/Borrow_Code_Patterns_3.png"  width="366" height="212">
+
+          - The mutuable and immutable borrow ***are not happening at the same time*** in this example (even though they are happening in the same scope)
+
+- Example 4: immutable borrow after mutable borrow within same scope
+
+  ```rust
+  fn main() {
+      let mut list = vec![1, 2, 3];
+
+      let list_first = list.first();
+      let list_last = list.last();
+
+      println!(
+          "The first element is {:?} and the last is {:?}",
+          list_first,
+          list_last
+      );
+
+      *list.first_mut().expect("list wasy empty") += 1;
+  }
+
+  // The first element is Some(2) and the last is Some(3)
+  ```
+
+- In latest compiler versions, it is intelligent to detect that even though mutable and immutable borrow are in same scope, it can identify that there is no mutation after first mutation till end of scope
+  - So, it allows to compile and able to run this code
+
+### Common Code Patterns (because of borrowing rules)
+
+- Code patterns influenced by borrowing rules
+
+#### New Scopes
+
+- *To indicate where a borrow should end*
+
+- We can tell Rust when the borrow ends by adding new scopes
+
+    ```rust
+    fn main() {
+        let mut list = vec![1, 2, 3];
+
+        { // new scope to limit the borrow
+            let list_first = list.first();
+            let list_last = list.last();
+
+            println!(
+                "The first element is {:?} and the last is {:?}",
+                list_first,
+                list_last
+            );
+        }
+
+        *list.first_mut().expect("list wasy empty") += 1;
+    }
+
+    // The first element is Some(2) and the last is Some(3)
+    ```
+
+#### Temporary Variables
+
+- *To end a borrow and get a result before another borrow*
+
+- Case where a temporary variable is needed because of borrowing rules
+  - When you want to borrow a variable is 'borrowed as mutable' as immutable
+  - This causes borrow to end when result is computed
+
+    ```rust
+    #[derive(Debug)]
+    pub struct Player {
+        score: u32,
+    }
+
+    impl Player {
+        pub fn set_score(&mut self, new_score: u32) {
+            self.score = new_score;
+        }
+
+        pub fn score(&self) -> u32 {
+            self.score
+        }
+
+        pub fn new() -> Self {
+            Player { score: 0 }
+        }
+    }
+
+    fn main() {
+        let mut player1 = Player::new();
+        let old_score = player1.score();
+        player1.set_score(old_score + 1);
+        println!("The score is: {:?}", player1)
+    }
+
+    // The score is: Player { score: 1 }
+    ```
+
+#### Entry API (method named `entry`)
+
+- *For updating or inserting into a data structure*
+
+- The method `entry` is part of some data structure API's
+  - Example: HashMap
+    - Common HashMap operations
+      - Look up into the HashMap using 'Key'
+        - If the key exists
+          - we want to update the value
+        - If the key doesnt exist
+          - We want to insert the initial value
+    - Example: Counting Word Frequencies
+      - Text: "It was the best of times, it was the worst of times"
+        - <img src="images/Borrow_Entry_API_1.png"  width="515" height="272">
+          -  Words are the keys and frequencies are the values
+             -  If the word present, we will increase the count
+             -  If the workd not present, we will insert the word with count of 1
+
+        ```rust
+        use std::collections::HashMap;
+
+        fn main() {
+            let text = "hello world hello";
+
+            let mut freqs = HashMap::new();
+
+            for word in text.split_ascii_whitespace() {
+                match freqs.get_mut(word) {
+                    Some(value) => *value += 1,
+                    None => {
+                        freqs.insert(word, 1);
+                    },
+                }
+            }
+
+            println!("Word frequencies: {:?}", freqs);
+        }
+        ```
+
+- Using `entry` and `or_insert` methods
+
+  ```rust
+  use std::collections::HashMap;
+
+  fn main() {
+      let text = "hello world hello";
+
+      let mut freqs = HashMap::new();
+
+      for word in text.split_ascii_whitespace() {
+          *freqs.entry(word).or_insert(0) += 1;
+      }
+
+      println!("Word frequencies: {:#?}", freqs);
+  }
+
+  // Word frequencies: {
+  //     "hello": 2,
+  //     "world": 1,
+  // }
+  ```
+
+- `entry`
+  - handles present/absent cases internally
+  - Convenient method (also other methods) for customizing logic
+- `HashMap`'s `entry` method
+  - `pub fn entry(&mut self, key: K) -> Entry<K, V>`
+    - `Entry` is an enum
+      - It's enum variatns
+        - `Occupied` and `Vacant`
+- `HashMap`'s `or_insert` method
+  - `pub fn or_insert(self, default: V) -> &'a mut V`
+
+#### Splitting up structs
+
+- *Methods only borrow field they use*
+
+- Group fields used together
+- Move methods to inner structs
+
+- Example 1:  Working
+  - Rust understands that it is safe to borrow differnt fields with different borrowing of the same `struct`
+    - Because there is no way that they can conflict
+
+      ```rust
+      pub struct Monster {
+          hp: u8, // help points
+          sp: u8, // spell points
+          friends: Vec<Friend>,   // list of friends who have a loyalty
+      }
+
+      pub struct Friend {
+          loyalty: u8,
+      }
+
+      impl Monster {
+          pub fn final_breath(&mut self) {
+              if let Some(friend) = self.friends.first() {
+                  self.hp += friend.loyalty;
+                  self.sp -= friend.loyalty;
+                  println!("healing for {}", friend.loyalty);
+              }
+          }
+      }
+
+      fn main() {
+          // 
+      }
+      ```
+
+- In this example
+  - `self.friends.first()` borrows `friends` fieldas immutable borrow
+  - The `if` code block borrows both `self.hp` and `self.sp` as mutable borrow
+  - All these 3 fields are member of the same struct `Monster` borrowed with different borrowers
+
+- Example 2:
+
+  ```rust
+  pub struct Friend {
+      loyalty: u8,
+  }
+
+  impl Monster {
+      pub fn final_breath(&mut self) {
+          if let Some(friend) = self.friends.first() {
+              self.heal(friend.loyalty);
+              println!("healing for {}", friend.loyalty);
+          }
+      }
+
+      pub fn heal(&mut self, amount: u8) {
+          self.hp += amount;
+          self.sp -= amount;
+      }
+  }
+
+  fn main() {
+      // 
+  }
+
+  // error[E0502]: cannot borrow `*self` as mutable because it is also borrowed as immutable
+  //   --> src/main.rs:14:13
+  //    |
+  // 13 |         if let Some(friend) = self.friends.first() {
+  //    |                               -------------------- immutable borrow occurs here
+  // 14 |             self.heal(friend.loyalty);
+  //    |             ^^^^^^^^^^^^^^^^^^^^^^^^^ mutable borrow occurs here
+  // 15 |             println!("healing for {}", friend.loyalty);
+  //    |                                        -------------- immutable borrow later used here
+
+  // For more information about this error, try `rustc --explain E0502`
+  ```
+
+  - This code won't compile
+    - Because `friends` is borrowed as immutable, but `heal` method need mutable Monster
+- Example 3
+  - The `heal` method want to change only `hp` and `sp` fields only, not the `friends` field
+  - In this case, we can use the ***split up struct pattern*** to solve the problem
+
+    ```rust
+    pub struct Stats {
+        hp: u8, // help points
+        sp: u8, // spell points
+    }
+    pub struct Monster {
+        stats: Stats,
+        friends: Vec<Friend>,   // list of friends who have a loyalty
+    }
+
+    pub struct Friend {
+        loyalty: u8,
+    }
+
+    impl Monster {
+        pub fn final_breath(&mut self) {
+            if let Some(friend) = self.friends.first() {
+                self.stats.heal(friend.loyalty);
+                println!("healing for {}", friend.loyalty);
+            }
+        }
+    }
+
+    impl Stats {
+        pub fn heal(&mut self, amount: u8) {
+            self.hp += amount;
+            self.sp -= amount;
+        }
+    }
+
+    fn main() {
+        // 
+    }
+    ```
+
+#### Improvements planned on Rust (NLL)
+
+- Might be already added in the version that is tested while making my notes
+  - NEED TO STUDY and UNDERSTAND
+
+- **NLL (Non-Lexical Lifetimes)**
+  - It is a feature of Rust compilers
+  - This feature teaches the borrow checker some new tricks
+
+- Tricks/Improvements
+  - 1.: **Borrows that aren't used through the end of the scope**
+    - That is, the borrow checker learns that
+      - *borrows don't have to last until the end of the lexical scope*
+  - 2. **Borrows only used for part of an expression**
+    - The borrow checker is able to see that a borrow that is part of an expression can end after computing that part (rather than hanging around for the entire expression)
+  - 3. **Borrows that aren't used in an arm**
+    - The borrow checker understand that borrows are not used in all the arms of an `if` or `match` expression
+
+- Caveats
+  - 1. **Entry API will stil be preferred**
+    - Makes code more concisse and clear
+      - <img src="images/Borrow_NLL_1.png"  width="629" height="328">
+
+        - Also the `entry` API is more efficient
+        - In the code, that uses `match`, the *hash of the key is computed twice*
+          - <img src="images/Borrow_NLL_2.png"  width="226" height="120">
+        - When using the `entry` API, the has is computed only once
+          - `*freqs.entry(word)`
+  - 2. **Won't change the need to split struct**
+    - Above we have splitted the `Monster` struct into smaller structs based on how the fields are used
+      - This pattern is still useful
+      - Because, methods will still borrow the entire `struct`, which will count as **`at the same time`**
+  - 3. **Code that actually violates the borrowing rules will still be valid**
+    - Note that NLL improvements are fixing cases where the borrow checker was being overly conservative and rejecting code that was actually valid
+      - Rust borrow checker will still reject the invalid code
+      - Example
+        - <img src="images/Borrow_NLL_3.png"  width="426" height="252">
+
+        - In this example
+          - We tried to take a mutable reference between the immutable reference, so borrows are still happening at the same time
+          - Hence, borrow checker will still reject this code

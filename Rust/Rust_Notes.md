@@ -1,5 +1,7 @@
 # RUST
 
+All the study did with `rustc 1.57.0 (f1edd0429 2021-11-29)` version
+
 ## Rust related documentation
 
 - Online documentation
@@ -174,7 +176,7 @@
                 - `b += 100;`
             - `println!("{:?}", b);`
           - If the sequence of values need to be changes, we can use `Vec`, a type provided by standard library
-  - Slice
+  - Slice [In-Depth on Slice](Ownership_And_Borrowing.md#Slices)
     - It lets us reference a contiguous subset of data in another data structure
       - Say view of that data structure
     - Example - 1:
@@ -262,6 +264,14 @@
 - To Understand
 
 - `derive`
+
+## Ownership and Borrowing
+
+[Ownership and Borrowing](Ownership_And_Borrowing.md)
+
+## Annotations
+
+[Annotation Notes](Annotations.md)
 
 ## Other
 
