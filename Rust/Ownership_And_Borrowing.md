@@ -1125,3 +1125,145 @@ In Rust, there number of useful code patterns exists because of this borrowing r
         - In this example
           - We tried to take a mutable reference between the immutable reference, so borrows are still happening at the same time
           - Hence, borrow checker will still reject this code
+
+## Owernship beyond Memory
+
+- Ownership applies to just more tha memory
+  - That is we can manage other soruces as well
+    - E.g., Nework sockets
+
+- Management of sockets
+- Other resources managed with ownership
+- Customizing types with the `Drop` trait
+
+### Management of sockets
+
+- Same as memory, automatically closed
+
+- About sockets
+  - Socket is a 'Network Enpoint'
+    - A socket is a system resource
+    - It is a connection to a network endpoint for sending and receiving data
+  - Example:
+    - TCP socket
+      - To use a TCP socket
+        - Bind to a port
+        - Close when done
+- Similar memory and socket problems
+  - Memory
+    - Use after free
+    - Double free
+    - Memory leaks
+    - (E.g. in Ruby) Migitaged with garbage collector
+    - (In Rust) Migitated with ownership
+  - Sockets
+    - User after close
+    - Closing twice
+    - Socket leaks
+    - Not mitigated with garbage collection
+    - (In Rust) Mitigated with ownership
+
+- Example 1 - `Rust` - Socket get closed when ownership goes out of scope.
+  - `_listener` is the owner of the socket
+
+  ```rust
+  use std::thread;
+  use std::time::Duration;
+  use std::net::TcpListener;
+
+  fn open_socket_for_five_seconds() {
+      let _listener = TcpListener::bind("127.0.0.0:5000").unwrap();
+      thread::sleep(Duration::from_secs(5));
+  }
+
+  fn main() {
+      open_socket_for_five_seconds();
+      println!("Back in main");
+      thread::sleep(Duration::from_secs(5));
+  }
+  ```
+
+- Example 2 - `Ruby`
+  - The socket is listening for 10 seconds, because the opened socket is not closed yet
+    - Not garbage collection for sockets (only for memory)
+    - We need to explicitly close the socket using `s.close`, but rust takes care of this auotmatically using ownership
+
+  ```ruby
+  require 'socket'
+
+  def open_socket_for_five_seconds
+    s = TCPServer.new '127.0.0.1', 5000
+    sleep 5
+  end
+
+  open_socket_for_five_seconds
+  puts "Back in main"
+  sleep 5
+  ```
+
+### Other resources (in the STL) managed with ownership
+
+- Sockets are not the only type managed with ownership
+- There are other resources defined in rust standard library are managed with ownership as well
+  - Example:
+    - `Mutex`
+    - `Rc`
+    - `File`
+- `Mutex<T>` (Mutual Exclusion)
+  - Only let on thread at a time change the inner value
+    - Used in multithread contexts
+    - Used to ensure that only one thread is allowed to modify the value inside the mutex
+  - To moidify the value, acquire the mutex's lock
+    - Need to acquire the lock just before modifying the value
+  - Release the lock after modifying to let other threads acquire the lock
+  - Owner going out of scope = lock release
+    - When the owner of the lock goes out of scope, the lock is automatically released
+
+- `Rc<T>` (Reference Counted)
+  - Allows for multiple owners
+    - It is a type that allows for multiple owners for a single piece of data
+  - Keeps track of how many ownders exist
+    - It has an internal counter of how many owners exist
+  - Memory is cleaned up when the last ownder goes out of scope
+  - Count management happens automatically when each owner goes out of scope
+    - Decrementing the reference counter when each owner goes out of scope is handled automatically by Rust
+- `Files`
+  - Close when done using
+    - To avoid overwhelming the system
+  - Closed automatically when ownder goes out of scope
+
+### Customizing-types-with-`Drop`-trait
+
+- We can customize our own types to do when their ownders go out of scope
+
+- `Drop` trait
+  - One method: `drop`
+    - Drop trait has one method named `drop`
+  - `drop` takes `&mut self`
+    - This method takes a mutable reference to `self` and no other paramters
+    - You put our logic that is necessary to clean up your resources that your data type uses
+
+- Example:
+  - Also note that the variables goes out of scope in the reverse order in which they were declared
+
+    ```rust
+    struct Noisy {
+        id: i32,
+    }
+
+    impl Drop for Noisy {
+        fn drop(&mut self) {
+            println!("Noisy number {} going out of scope!!!", self.id);
+        }
+    }
+
+    fn main() {
+        let _n1 = Noisy{ id : 1};
+        let _n2 = Noisy{ id : 2};
+        println!("End of main!");
+    }
+
+    // End of main!
+    // Noisy number 2 going out of scope!!!
+    // Noisy number 1 going out of scope!!!
+    ```

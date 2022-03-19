@@ -65,3 +65,7 @@
 
 - <https://doc.rust-lang.org/std/ops/trait.DerefMut.html>
   - Used for mutable deferencing operations like `*v = l;`
+
+## `Drop`
+
+- Refer [Customizing types with `Drop` trait](./Ownership_And_Borrowing.md#Customizing-types-with-`Drop`-trait)

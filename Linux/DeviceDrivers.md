@@ -9,6 +9,9 @@
     - [Polling](#polling)
     - [Interrupts](#interrupts)
   - [DMA (Direct Memory Access)](#dma-direct-memory-access)
+    - [Interrupt Latency](#interrupt-latency)
+  - [Memory](#memory)
+    - [Kernel Memory](#kernel-memory)
   - [Books](#books)
   - [Other Links](#other-links)
 
@@ -135,6 +138,84 @@
       - Device drivers that need to do a lot of work as a result of receiving an interrupt can use kernel's **bottom half handlers** or **task queues** to queue routines to be called later on.
 
 ## DMA (Direct Memory Access)
+
+- **Interrupt based based transfer**
+  - If the amount of data that need to be transferred is low
+    - We can use interrupt driven device drivers for transferring data
+      - Ex., RS232 driver
+    - This approach will **consume CPU processing time**
+- **DMA based data transfer**
+  - If the amount of data that need to be transferred is high
+    - We can use DMA
+      - Ex., Hard Disk, Ethernet devices
+
+- **DMA**
+  - A DMA controller allows devices to **transfer data to or from the system's memory without the intervention of the processor**
+    - There will be more than one **DMA Channel**
+      - Each DMA Channel has associated with an address register and bit count register
+  - To initiate a data transfer
+    - the device driver setups up the DMA channel's address registers together with the direction of the data transfer (*read or write*)
+    - it then tells the device that it may start the DMA when it wishes
+    - When the transfer is complete, the device interrupts the PC
+  - ***Whilst the transfer is taking place the CPU is free to do other things***
+- **Caveat**
+  - DMA controller **knows nothing of Virtual Memory**
+    - It has **access only to the physical memory in the system**
+  - The **memory** that is being DMA'ed to or from **must be a contiguous block of physical memory**
+  - **You cannot DMA directly to the virtual address space of a process**
+    - However
+      - You can lock the processes physical pages into memory
+        - Preventing them from being swapped out to the swap device during a DMA operation
+  - `dma_chan`
+    - Linux tracks the usage of the DMA channels using a vector of `dma_chan` data structure (one per DMA channel)
+      - `cat /proc/dma`
+
+### Interrupt Latency
+
+- The amount of time that it takes between the hardware device raising he interrupt and the device driver's interrupt handling routine being called
+
+## Memory
+
+- **Cannot use Virtual Memory**
+  - Since Device Drivers are part of Linux Kernel, they cannot use Virtual Memory
+- **Can't rely on particular process**
+  - Each time they run, may be as an interrupt received or as a bottom half or task qeue handler is scheduled
+    - the `current` process may change
+      - Hence, the device driver cannot rely on a particular process running (even if it is doing work on its behalf)
+- **Need of memory**
+  - Like the rest of the kernel, device drivers use **data structures** to keep track of the device that it is controlling
+  - These data structures can be
+    - **Statiscally allocated**
+      - Part of device driver's code
+      - But **would be wasteful** as it makes the kernel larger than it need be
+    - **Dynamically allocated**
+      - Most device drivers allocate k**ernel, non-paged, memory to hold their data**
+
+### Kernel Memory
+
+- **alloc and dealloc routines**
+  - Linux provides kernel memory **allocation and deallocation routines**
+    - Drivers use these routines
+- **Allocated in chunks**
+  - Kernel memory is allocated in **chunks that are power of 2** even if the device driver asks for less
+    - Example - 128 or 512 bytes
+  - The number of bytes that the device driver requested is **rounded up to the next block size boundary**
+    - This makes kernel memory deallocation easier as the smaller free blocks can be recombined into bigger blocks
+- **Extra work on Kernel mem allocation**
+  - Linux needs to do quite a lot of extra work when the kernel memory is requested
+  - **When low**
+    - If the amount of memory is low
+      - Physical pages may need to be **discarded** or
+      - Written to the **swap device**
+    - Normally
+      - Linux will suspect the requestor, **putting the process onto a wait queue**, until there is enough physical memory
+- **Flags**
+  - **Can't wait**
+    - Not all device drivers (or indeed Linux Kernel code) may want to wait for allocation
+      - So the kernel memory allocation routines **can be requested to fail** if they cannot immediately allocate memory
+    - **DMA**
+      - If the Device Driver wishes to DMA to or from the allocated memory, it can also specify that the memory is DMA'able
+        - This way it is the Linux kernel that needs to understand what constitues DMA'ble memory for this system and not the device driver
 
 ## Books
 

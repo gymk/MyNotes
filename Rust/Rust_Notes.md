@@ -269,6 +269,10 @@ All the study did with `rustc 1.57.0 (f1edd0429 2021-11-29)` version
 
 [Ownership and Borrowing](Ownership_And_Borrowing.md)
 
+## Error handling
+
+[Error handling in Rust](Error_Handling.md)
+
 ## Annotations
 
 [Annotation Notes](Annotations.md)
