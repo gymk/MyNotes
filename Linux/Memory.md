@@ -10,6 +10,7 @@
   - [Process Memory Management](#process-memory-management)
     - [malloc_trim](#malloc_trim)
   - [Debugging](#debugging)
+  - [Study Links](#study-links)
 
 - Tutorial: Beginners guide on linux memory management
   - <https://www.golinuxcloud.com/tutorial-linux-memory-management-overview/>
@@ -115,6 +116,9 @@
     - When
   - RSS - Resident Set Size
 
+- [1]
+  - Memory management is actually a ***trade-off between performance and accuracy***
+
 ### malloc_trim
 
 - <https://man7.org/linux/man-pages/man3/malloc_trim.3.html>
@@ -123,3 +127,10 @@
 ## Debugging
 
 - Refer [here](Debugging/Debugging.md)
+
+## Study Links
+
+- [1]
+  - <https://www.youtube.com/watch?v=w9YQawAfkPw>
+    - Linux Memory Management at Scale
+      - Talks about cgroup
