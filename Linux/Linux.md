@@ -65,16 +65,17 @@ All debugging related to Linux can be found [here](Debugging/Debugging.md)
 
 ## Books
 
-- [1] <http://www.science.unitn.it/~fiorella/guidelinux/tlk/node5.html>
+- [b1] <http://www.science.unitn.it/~fiorella/guidelinux/tlk/node5.html>
   - Very old book
   - But provides insights how we have to understand the Linux code
 
 ## Study Links
 
-- <https://www.grant.pizza/>
-  - Has some good blog on Linux
-    - cgroup
-    - vmlinux.h
-    - DWARF
-    - procfs
-    - ...
+- [s1]
+  - <https://www.grant.pizza/>
+    - Has some good blog on Linux
+      - cgroup
+      - vmlinux.h
+      - DWARF
+      - procfs
+      - ...
