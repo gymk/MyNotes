@@ -3,6 +3,7 @@
 ## Helgrind: a thread error detector
 
 - <https://valgrind.org/docs/manual/hg-manual.html>
+  - Can be used to detect dead lock as well
 
 ## To Understand
 
