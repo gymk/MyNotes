@@ -17,13 +17,13 @@
 
 ## **Linux Device Driver**
 
-- From [1]
+- From [s1]
   - The Linux kernel device drivers are, essentially, a shared library of privileged, memory resident, low level hardware handling routines
   - It is Linux's device drivers which each handle the peculiarities of the devices that they are managing
 
 ### **Device Representation**
 
-- From [1]
+- From [s1]
   - **device special file**
     - Every device in the system is represented by a *device special file*
       - For example,
@@ -48,7 +48,7 @@
 
 ### **Types of devices**
 
-- From [1]
+- From [s1]
   - Linux supports 3 types of hardware devices
     - character
     - block and
@@ -67,7 +67,7 @@
 
 ### **Device Driver common attributes**
 
-- From [1]
+- From [s1]
   - There are many different device drivers in the Linux kernel but they all share some common attributes:
     - **kernel code**
       - Device drivers are part of the kernel and, like other code within the kernel, if they go wrong they can seriously damage the system. A badbly written driver may even crash the system, possibly corrupting file systems and losing data
@@ -99,7 +99,7 @@
 
 ## Polling and Interrupts
 
-- From [1]
+- From [s1]
   - For any command given to a device driver, it has two choices to complete the command
     - The device driver can
       - *Either* **poll the device**
@@ -107,7 +107,7 @@
 
 ### Polling
 
-- From [1]
+- From [s1]
   - Polling the device usually means reading its status register every so often until the device's status changes to indicate that it has completed the request.
     - **Continuous polling is disastrous**
       - As device driver is part of the kernel it would be *disastrous if a driver were to poll* as nothing else in the kernel would run until the device had completed the request.
@@ -119,7 +119,7 @@
 
 ### Interrupts
 
-- From [1]
+- From [s1]
   - An interrupt device drvier is one where the hardware device being controlled will cause a hardware interrupt to occure whenever it needs to be served.
     - For example,
       - An ethernet device driver would interrupt whenever it receives an ethernet packet from the network.
@@ -219,7 +219,7 @@
 
 ## Books
 
-- [1] <http://www.science.unitn.it/~fiorella/guidelinux/tlk/node5.html>
+- [s1] <http://www.science.unitn.it/~fiorella/guidelinux/tlk/node5.html>
   - Very old book
   - But provides insights how we have to understand the Linux code
 
