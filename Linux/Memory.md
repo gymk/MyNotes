@@ -116,7 +116,7 @@
     - When
   - RSS - Resident Set Size
 
-- [1]
+- [s1]
   - Memory management is actually a ***trade-off between performance and accuracy***
 
 ### malloc_trim
@@ -130,7 +130,7 @@
 
 ## Study Links
 
-- [1]
+- [s1]
   - <https://www.youtube.com/watch?v=w9YQawAfkPw>
     - Linux Memory Management at Scale
       - Talks about cgroup
