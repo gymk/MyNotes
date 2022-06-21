@@ -1,0 +1,80 @@
+# Product Owner (PO)
+
+- [Product Owner (PO)](#product-owner-po)
+  - [Study Links](#study-links)
+
+- **What is Scrum**
+  - It is a software development framework
+    - That prescribes
+      - Acvities and processes for
+        - Defining, Creating and Delivering a product to market through a series of iterative cycles
+- **What is a Product** in the context of Scrum?
+  - The Product
+    - resulting from the use of a Scrum framework by a Scrum team
+  - It could be a
+    - **Tangile item**
+      - A tangible item produced to create a specific value
+        - Important result of Scrum
+          - An important result and focus in the Agile methodology is
+            - To create something that the market and end users want
+          - Very important that it produce something valueable
+            - Using projective, lightweight process
+    - **Solves a problem**
+      - A product that solves a problem or provides a benefit (to someone)
+        - The needs and priorities of the end user are what really drive product direction in Scrum
+    - **An item or a Service**
+      - Products can be an actual item or a service
+        - An item
+          - Product can be
+            - An actual item that is made
+            - Or a piece of software that is coded
+        - A Service
+          - It could also be
+            - A service that provides value to tbe end users
+      - Product
+        - Something valuable that end users want to use
+        - A product that can provide revenu to the organizations that make them
+    - **Products are created through a Process**
+      - In Scrum
+        - Regardless of what the product is
+          - All products are created through
+            - A well-defined process that take a team
+              - thourgh a formal planning session,
+              - throgh an iterative development cycle,
+                - a sprint that can last one to four weeks
+              - results in a releasable increment of the product
+            - At the end of each sprint
+              - A demo was given
+              - A retrospective occurs
+        - Backlog
+          - Ongoing backlog grooming and prioritization by the Product Owner
+            - With continuous feedback being incorporated from end users and stakeholders to drive product direction
+- **Product vs Project**
+  - Project
+    - Projects are temporary one-time endeavors
+      - that have a definite start and a definite end
+  - Product
+    - Can evolve indefinitely
+      - Until there is no longer enough user demand for the product development to continue
+    - Layering Scrum framework on top of a project cycle
+      - Think sprints as micro projects
+        - Sprint lasts from 1 to 4 weeks
+      - Initiation is like Creating and maintenance of the backlog
+        - This is where stories or requirements that are most important have been groomed and well-defined
+          - So that they can be delivered within one sprint
+
+## Study Links
+
+- <https://www.kbp.media/the-roles-product-people-play/>
+  - What is
+    - Project Manager
+    - Project Owner
+    - Business Analysis
+- <https://learning.oreilly.com/library/view/beyond-requirements-analysis/9780133039863/>
+  - Beyond Requirements: Analysis with an Agile Mindset
+- <https://learning.oreilly.com/videos/analysis-for-product/9780134394732/>
+  - Analysis for Product Owners: Determine the right things to deliver
+- Skillsoft
+  - Advanced Scrum Master Track 2: Software Product Owner
+  - Book
+    - The Art of Agile Product Ownership: A Guide for Product Managers, Business Analysts, and Entrepreneurs
