@@ -2,18 +2,46 @@
 
 All the study did with `rustc 1.57.0 (f1edd0429 2021-11-29)` version
 
+- [RUST](#rust)
+  - [Rust related documentation](#rust-related-documentation)
+  - [Installation](#installation)
+    - [System Instlalations](#system-instlalations)
+    - [Rust in WSL (Windows)](#rust-in-wsl-windows)
+    - [Updating rust](#updating-rust)
+    - [Rust Uninstall in WSL](#rust-uninstall-in-wsl)
+  - [Project and Library Crates](#project-and-library-crates)
+  - [Peformance analysis](#peformance-analysis)
+  - [serial_test](#serial_test)
+  - [Data Types](#data-types)
+  - [Functions](#functions)
+  - [Control Flow](#control-flow)
+  - [Enumerations (`enum`)](#enumerations-enum)
+  - [struct](#struct)
+  - [Traits](#traits)
+  - [Macros](#macros)
+  - [Attributes](#attributes)
+  - [Ownership and Borrowing](#ownership-and-borrowing)
+  - [Error handling](#error-handling)
+  - [Annotations](#annotations)
+  - [Other](#other)
+    - [Shorthand struct initialization](#shorthand-struct-initialization)
+  - [Stud Links](#stud-links)
+
 ## Rust related documentation
 
 - Online documentation
   - <https://doc.rust-lang.org/>
 - Offline documentation (this is included with rust installation)
   - `rustup doc`
+- Cargo Book
+  - <https://doc.rust-lang.org/cargo/index.html>
 
 ## Installation
 
 - Details
   - `cargo`
     - Build System and Packag Manager tool
+      - [Cargo Commands](https://doc.rust-lang.org/cargo/commands/index.html)
   - `rustc`
     - Rust compiler
   - `rustup`
@@ -81,6 +109,10 @@ All the study did with `rustc 1.57.0 (f1edd0429 2021-11-29)` version
 - To build and run (most common)
   - `cargo run`
     - This will do both *build* and run the executable
+- To check current project/package
+  - `cargo check`
+    - [This](https://doc.rust-lang.org/cargo/commands/cargo-check.html) will check local package and all of its dependencies for errors.
+    - This will compile the packages without performing the final step of code generation, which is faster than running `cargo build`.
 
 ## Peformance analysis
 
@@ -309,3 +341,8 @@ All the study did with `rustc 1.57.0 (f1edd0429 2021-11-29)` version
 
 - <https://github.com/rylev/learn-rust-the-hard-way>
   - Some example programs with detailed comments in it to understand the language
+- <http://cliffle.com/>
+  - C++ and Rust together - explained well
+- <https://rustwasm.github.io/docs/book/game-of-life/introduction.html>
+  - How to use
+    - Rust, WebAssembly and JavaScript **together**
