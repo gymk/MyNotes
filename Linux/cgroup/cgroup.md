@@ -9,7 +9,7 @@
 ## **`cgroup`**
 
 - **What it is**
-  - [3]
+  - [c13]
     - Control groups (cgroup) are a **feature** of Linux kernel by which ***groups of processes can be monitored and have their resources limited***
       - E.g. If we don't want to control Google Chrome
         - Limiting a process not to exceed 1 GB RAM or 30% CPU usage
@@ -57,21 +57,21 @@
   - `cat /proc/[pid]/cgroup`
 
 - `cpuset`
-  - [2] Confine process to processor and memory node subsets
+  - [c12] Confine process to processor and memory node subsets
 
 ### cgroup study links
 
-- [1]
+- [c11]
   - <https://docs.oracle.com/en/operating-systems/oracle-linux/6/adminsg/ol_cgroups.html>
-- [2]
+- [c12]
   - <https://man7.org/linux/man-pages/man7/cpuset.7.html>
-- [3]
+- [c13]
   - <https://www.grant.pizza/blog/understanding-cgroups/>
     - Understanding cgroups
-- [4]
+- [c14]
   - <https://www.redhat.com/sysadmin/cgroups-part-one>
     - Details how cgroup works
-- [5]
+- [c15]
   - <https://www.youtube.com/watch?v=w9YQawAfkPw>
     - Linux Memory Management at Scale
       - Talks about cgroup
@@ -92,7 +92,7 @@
 
 ### cgroup2 Study Links
 
-- [1]
+- [c21]
   - <https://www.youtube.com/watch?v=w9YQawAfkPw>
     - Linux Memory Management at Scale
       - Talks about cgroup
